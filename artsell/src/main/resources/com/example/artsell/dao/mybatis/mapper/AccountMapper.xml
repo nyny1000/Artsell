@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.example.artsell.dao.mybatis.mapper.AccountMapper">
+	<cache />
+
+	<select id="getAccountByUserId" resultType="Account">
+		SELECT *
+		FROM ACCOUNT
+		WHERE ACCOUNT.USERID = #{param1}
+	</select>
+
+	<select id="getAccountByUserIdAndPassword"
+		resultType="Account">
+		SELECT *
+		FROM ACCOUNT
+		WHERE ACCOUNT.USERID = #{param1}
+		AND
+		ACCOUNT.PASSWORD = #{param2}
+	</select>
+
+	<select id="getUsernameList" resultType="java.lang.String">
+		SELECT NAME FROM ACCOUNT
+	</select>
+
+	<select id="viewAccountList" resultType="Account">
+		SELECT * FROM ACCOUNT
+	</select>
+
+
+	<update id="updateAccount" parameterType="Account">
+		UPDATE ACCOUNT SET
+		EMAIL = #{email},
+		NAME = #{name},
+		ADDRESS1 = #{address1},
+		ADDRESS2 = #{address2},
+		PASSWORD = #{password},
+		PHONE = #{phone},
+		CREDIT = #{credit}
+		WHERE USERID = #{userId}
+	</update>
+
+	<insert id="insertAccount" parameterType="Account">
+		INSERT INTO ACCOUNT
+		(EMAIL, NAME, PASSWORD, ADDRESS1, ADDRESS2, PHONE, CREDIT, USERID, QUIT)
+		VALUES
+		(#{email}, #{name}, #{password}, #{address1},  #{address2}, #{phone}, #{credit}, #{userId}, 0)
+	</insert>
+	
+	<update id="deleteAccount" parameterType="String">
+		update Account
+		set quit = 1
+		WHERE USERID = #{param1}
+	</update>
+	
+	<select id="getUserList" resultType="Account">
+		select *
+		from Account
+		where quit = 0
+	</select>
+
+</mapper>

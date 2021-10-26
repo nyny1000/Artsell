@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.example.artsell.dao.mybatis.mapper.ItemMapper">
+	<cache />
+
+	<select id="searchItemList" resultType="Item">
+		SELECT distinct i.ITEMID,
+		ITEMNAME,
+		MINPRICE,
+		BESTPRICE,
+		DEADLINE,
+		DESCRIPTION,
+		PICTURE,
+		ARTIST,
+		CATEGORYID,
+		i.USERID
+		FROM ITEM i, AUCTIONITEM a
+		<where>
+			i.ITEMID = a.ITEMID
+			AND i.deadline &gt; (SELECT SYSDATE FROM DUAL)
+			<if test="keywords != null">
+				AND LOWER(ITEMNAME) LIKE #{keywords}
+			</if>
+			<if test="artist != null">
+				AND LOWER(ARTIST) LIKE #{artist}
+			</if>
+			<if test="categoryId != null">
+				AND CATEGORYID = #{categoryId}
+			</if>
+		</where>
+	</select>
+
+
+	<select id="getItemListByCategory" resultType="Item">
+		SELECT distinct
+		i.ITEMID,
+		ITEMNAME,
+		MINPRICE,
+		BESTPRICE,
+		DEADLINE,
+		DESCRIPTION,
+		PICTURE,
+		ARTIST,
+		CATEGORYID,
+		i.USERID
+		FROM ITEM i, AUCTIONITEM a
+		WHERE CATEGORYID =
+		#{categoryId}
+		AND i.ITEMID NOT IN (SELECT ITEMID
+		FROM AUCTIONEDITEM)
+		AND
+		i.ITEMID = a.ITEMID
+		AND i.deadline &gt; (SELECT SYSDATE FROM DUAL)
+	</select>
+
+	<select id="getItem" resultType="Item">
+		SELECT i.ITEMID,
+		ITEMNAME,
+		MINPRICE,
+		BESTPRICE,
+		DEADLINE,
+		DESCRIPTION,
+		PICTURE,
+		ARTIST,
+		CATEGORYID,
+		i.USERID
+		FROM ITEM i
+		WHERE i.ITEMID = #{itemId}
+	</select>
+
+	<select id="getItemListByUserId" resultType="Item">
+		SELECT ITEMID,
+		ITEMNAME,
+		MINPRICE,
+		BESTPRICE,
+		DEADLINE,
+		DESCRIPTION,
+		PICTURE,
+		ARTIST,
+		CATEGORYID,
+		USERID
+		FROM ITEM
+		WHERE USERID = #{userId}
+		AND ITEMID NOT IN
+		(SELECT ITEMID
+		FROM AUCTIONEDITEM)
+	</select>
+
+	<select id="getMyItemList" resultType="Item">
+		SELECT ITEMID,
+		ITEMNAME,
+		MINPRICE,
+		BESTPRICE,
+		DEADLINE,
+		DESCRIPTION,
+		PICTURE,
+		ARTIST,
+		CATEGORYID,
+		USERID
+		FROM ITEM
+		WHERE USERID = #{userId}
+	</select>
+
+	<select id="getArtistList" resultType="String">
+		SELECT DISTINCT ARTIST
+		FROM ITEM
+	</select>
+
+
+
+	<delete id="deleteItem" parameterType="String">
+		DELETE FROM ITEM
+		WHERE
+		ITEMID = #{itemId}
+	</delete>
+
+	<insert id="insertItem" parameterType="Item">
+		<selectKey keyProperty="itemId" resultType="String"
+			order="BEFORE">
+			SELECT 'I'||TO_CHAR(ITEM_SEQ.NEXTVAL) AS ITEMID FROM DUAL
+		</selectKey>
+		INSERT INTO ITEM(itemId, itemName, minPrice, bestPrice, deadline,
+		description, picture, artist, categoryId, userId)
+		VALUES (#{itemId},
+		#{itemName}, #{minPrice}, #{bestPrice}, #{deadline},
+		#{description},
+		#{picture}, #{artist}, #{categoryId}, #{userId})
+	</insert>
+	<!-- 테스트하려면 to_date('20210527015400', 'YYYYMMDDHH24MISS') -->
+
+	<update id="updateItemPrice" parameterType="Item">
+		UPDATE ITEM
+		SET
+		MAXPRICE = #{price}
+		WHERE ITEMID = #{itemId}
+	</update>
+
+	<update id="updateReload" parameterType="Item">
+		<selectKey keyProperty="newItemId" resultType="String"
+			order="BEFORE">
+			SELECT 'I'||TO_CHAR(ITEM_SEQ.NEXTVAL) AS ITEMID FROM DUAL
+		</selectKey>
+		UPDATE ITEM
+		SET MINPRICE = #{minPrice}, DEADLINE = #{deadline}, itemId
+		= #{newItemId}
+		WHERE ITEMID = #{itemId}
+	</update>
+
+	<update id="changeDeadline">
+		UPDATE ITEM
+		set deadline = #{param1}
+		where itemId =
+		#{param2}
+	</update>
+
+	<select id="getItemPrice" parameterType="String"
+		resultType="int">
+		Select minPrice
+		from ITEM
+		where itemId = #{itemId}
+	</select>
+
+	<select id="isCloseBid" resultType="int">
+  		<![CDATA[
+			SELECT COUNT(ITEMID)
+			FROM ITEM
+			WHERE DEADLINE <= #{curTime} and ITEMID = #{itemId}
+		]]>
+	</select>
+
+	<select id="isItemExist" parameterType="String" resultType="int">
+		select count(*)
+		from item
+		where itemId = #{itemId}
+	</select>
+	
+	<select id="getNotEndedAuctionItem" parameterType="Date" resultType="Item">
+		select deadline, itemId
+		from item
+		where deadline > #{param1}
+	</select>
+	
+	<select id="getEndedAuctionItem" parameterType="Date" resultType="Item">
+		<![CDATA[
+			select deadline, itemId
+			from item
+			where deadline <= #{pararm1}
+		]]>
+	</select>
+</mapper>

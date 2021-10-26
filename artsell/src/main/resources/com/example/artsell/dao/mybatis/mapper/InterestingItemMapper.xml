@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.artsell.dao.mybatis.mapper.InterestingItemMapper">
+	<select id="getInterestingItemList" parameterType="String" resultType="Item" >
+		SELECT
+      		 itemId, itemName, picture, deadline, bestPrice
+    	FROM ITEM
+    	WHERE itemId in (
+    		SELECT itemId
+    		FROM INTERESTINGITEM
+    		WHERE userId = #{userId}
+    	) and deadline &gt; (SELECT SYSDATE FROM DUAL)
+	</select>
+	
+	<select id="getPastInterestingItemList" parameterType="String" resultType="Item" >
+		<![CDATA[
+			SELECT
+	      		 itemId, itemName, picture, deadline, bestPrice
+	    	FROM ITEM
+	    	WHERE itemId in (
+	    		SELECT itemId
+	    		FROM INTERESTINGITEM
+	    		WHERE userId = #{userId}
+	    	) and deadline <= (SELECT SYSDATE FROM DUAL)
+    	]]>
+	</select>
+	
+	<insert id="insertInterestingItem">
+		INSERT INTO INTERESTINGITEM VALUES(#{param1}, #{param2})
+	</insert>
+	
+	<delete id="deleteInterestingItem">
+		DELETE FROM INTERESTINGITEM
+		WHERE USERID = #{param1} and ITEMID = #{param2}
+	</delete>
+	
+	<delete id="deleteAllInterestingItem">
+		DELETE FROM INTERESTINGITEM
+		WHERE ITEMID = #{itemId}
+	</delete>
+	
+	<select id="containsInterestingItem" resultType="int">
+		SELECT COUNT(*)
+		FROM INTERESTINGITEM
+		WHERE USERID = #{param1} and ITEMID = #{param2}
+	</select>
+	
+	<delete id="deleteAll">
+		DELETE FROM INTERESTINGITEM
+		WHERE USERID = #{userId}
+	</delete>
+</mapper>

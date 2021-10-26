@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- <mapper namespace="com.example.artsell.dao.mybatis.mapper.AuctionItemMapper">
+  <cache />
+  <select id="getAuctionItemByItemIdAndUserId" resultType="AuctionItem">
+  	SELECT *
+  	FROM AUCTIONITEM
+  	WHERE USERID = #{userId}
+  	AND ITEMID = #{itemId}
+  </select>
+  
+  <select id="getBuyersByItemId" resultType="AuctionItem">
+  	SELECT USERID, MYPRICE
+  	FROM AUCTIONITEM
+  	WHERE ITEMID = #{itemId} AND STATE = 0
+  </select> -->
+<mapper
+	namespace="com.example.artsell.dao.mybatis.mapper.AuctionItemMapper">
+	<cache />
+	<select id="getAuctionItemByItemIdAndUserId"
+		resultType="AuctionItem">
+		SELECT *
+		FROM AUCTIONITEM
+		WHERE USERID = #{userId}
+		AND ITEMID
+		= #{itemId}
+	</select>
+
+	 <!-- 
+	<select id="getAuctionItem" resultType="AuctionItem">
+		SELECT *
+		FROM auctionItem
+		WHERE userId = #{userId} and state = 0
+	</select>
+	 -->
+
+	<select id="getBuyersByItemId" resultType="AuctionItem">
+		SELECT *
+		FROM AUCTIONITEM
+		WHERE ITEMID = #{itemId} AND STATE IN (0, 1, 2)
+		ORDER BY myPrice DESC
+	</select>
+	
+	<select id="getBuyers" resultType="AuctionItem">
+		SELECT *
+		FROM AUCTIONITEM a, Account u
+		WHERE a.userId = u.userId and a.ITEMID = #{itemId} AND a.STATE = 3 and u.quit=0
+		ORDER BY a.myPrice DESC
+	</select>
+
+	<select id="calcBestPrice" resultType="int">
+		select bestPrice
+		from item
+		where itemId = #{itemId}
+	</select>
+
+	<insert id="insertAuctionItem" parameterType="AuctionItem">
+		insert into
+		AuctionItem values (#{userId}, #{itemId}, #{myPrice}, #{state})
+	</insert>
+
+	<update id="updatePrice" >
+		update auctionItem
+		set
+		myPrice = #{price}
+		where userId=#{userId} and
+		itemId=#{itemId}
+	</update>
+	
+	<update id="updateItemBestPrice">
+		update Item
+		set bestPrice = #{param2}
+		where itemId=#{param1}
+	</update>
+	
+	<insert id="addPrice" >
+		insert into
+		AuctionItem values (#{param1}, #{param2}, #{param3}, 0)
+	</insert>
+
+	<delete id="deleteAuctionItem" parameterType="String">
+		DELETE
+		FROM AuctionItem
+		WHERE USERID = #{param1} and itemId = #{param2}
+	</delete>
+	
+	<delete id="deleteAutionItemById"  parameterType="String">
+		delete from AuctionItem
+		where itemId = #{param1}
+	</delete>
+
+	<select id="isNewUserPrice" resultType="int">
+		select count(*)
+		from AuctionItem
+		where userId = #{userId} and
+		itemId = #{itemId}
+	</select>
+	
+	<!-- 
+	<select id="getAuctionedItem" resultType="AuctionItem">
+		select itemId,
+		auctionedPrice, userId
+		from AuctionItem
+		where userId = #{userId} and
+		state = 1
+	</select>
+	 -->
+
+	<select id="getOrderedItem" resultType="AuctionItem">
+		SELECT itemId,
+		auctionedPrice
+		FROM auctionItem
+		WHERE userId = #{userId} and state = 2
+	</select>
+
+
+	<select id="countAuctionJoinList" resultType="AuctionItem">
+		select count(*)
+		from auctionItem where itemId = #{itemId} and state != 4
+		and ORDER BY myPrice DESC
+		
+	</select>
+
+	<update id="changeState" parameterType="AuctionItem">
+		UPDATE auctionItem
+		SET state = #{state}
+		where userId = #{userId} and itemId = #{itemId}
+	</update>
+	
+	<select id="getItemListByAuctionItem" parameterType="String" resultType="AuctionItem">
+		select *
+		from auctionItem a, item i
+		where a.itemId = i.itemId and a.userId = #{userId} and state in (0,1,3)
+	</select>
+	
+	<select id="getItemListByAuctionedItem" parameterType="String" resultType="AuctionedItem">
+		select *
+		from auctionedItem a, item i
+		where  a.itemId = i.itemId and a.userId = #{userId} 
+	</select>
+
+	<update id="bidSuccess" parameterType="AuctionItem">
+		UPDATE auctionItem
+		SET state = 1
+		where myPrice = #{bestPrice} and itemId = #{itemId}
+	</update>
+	
+	<update id="bidFail" parameterType="AuctionItem">
+		UPDATE auctionItem
+		SET state = 3
+		where myPrice != #{bestPrice} and itemId = #{itemId} and state != 4 and state != 5
+	</update>
+	
+	<select id="isAuctioning" parameterType="String" resultType="AuctionItem">
+  	SELECT *
+  	FROM AUCTIONITEM
+  	WHERE ITEMID = #{itemId}
+  </select>
+  
+  <select id="getItemState" parameterType="String" resultType = "Integer">
+   SELECT state
+   FROM AUCTIONITEM
+   WHERE ITEMID = #{itemId}
+  </select>
+  
+  <select id="getAuctionedItemByItemId_SellerId" parameterType="String" resultType="AuctionedItem">
+  	SELECT i.userId, i.itemId, auctionedPrice, destination1, destination2, itemName, picture, sellDate
+  	FROM AUCTIONEDITEM a, item i
+  	WHERE a.itemId = i.itemId and a.ITEMID = #{itemId}
+  </select>
+  
+  <select id="getAuctionedItemByItemId_BuyerId" parameterType="String" resultType="AuctionedItem">
+  	SELECT a.userId, i.itemId, auctionedPrice, destination1, destination2, itemName, picture, sellDate
+  	FROM AUCTIONEDITEM a, item i
+  	WHERE a.itemId = i.itemId and a.ITEMID = #{itemId}
+  </select>
+  
+  <!-- <update id="deleteAuctionQuit" parameterType="String">
+  	UPDATE auctionItem
+  	SET userId = '0'
+  	WHERE userId = #{userId}
+  </update>
+  
+   <update id="deleteAuctionedQuit" parameterType="String">
+  	UPDATE auctionedItem
+  	SET userId = '0'
+  	WHERE userId = #{userId}
+    </update>
+    
+    <update id="deleteItemQuit" parameterType="String">
+  	UPDATE Item
+  	SET userId = '0'
+  	WHERE userId = #{userId}
+    </update> -->
+  
+  <select id="isAuctioningBuyer" parameterType="String" resultType="int">
+  	select count(*)
+	from auctionItem
+	where userId = #{userId} and state in (0,1)
+  </select>
+  
+  <select id="isAuctioningSeller" parameterType="String" resultType="int">
+  	select count(*)
+	from auctionItem
+	where state in (0,1,5) and itemId in
+	(select itemId
+	from Item
+	where userId = #{userId})
+  </select>
+  
+  <select id="checkBid" parameterType="String" resultType="int">
+  	select count(*)
+  	from auctionItem
+  	where state = 0 and itemId = #{itemId}
+  </select>
+  
+  <select id="isAuctionItemByItemIdUserId" parameterType="String" resultType="int">
+  	select count(*)
+  	from auctionItem
+  	where userId=#{userId} and itemId = #{itemId}
+  </select>
+</mapper>

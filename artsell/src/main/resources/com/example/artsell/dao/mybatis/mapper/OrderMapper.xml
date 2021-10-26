@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.artsell.dao.mybatis.mapper.OrderMapper">
+  <cache />
+  
+  <select id="getOrder" resultType="Order">
+  	SELECT a.userId, name, itemName, i.itemId, phone, address1, address2, myPrice, credit, picture, deadline
+  	FROM ACCOUNT a, item i, AuctionItem u
+  	WHERE a.userId = u.userId and i.itemId = u. itemId and a.USERID = #{userId} and i.itemId = #{itemId}
+  </select>
+  
+  <!-- 
+  <update id="editDestination" parameterType="String">
+  	UPDATE AUCTIONEDITEM
+	SET DESTINATION = #{destination}
+	WHERE USERID = #{userId}
+	AND ITEMID = #{itemId}
+  </update>
+ -->
+ 
+  <update id="updateAuctionedState" parameterType="String">
+  	UPDATE AUCTIONITEM
+	SET STATE = CASE WHEN STATE = 0 THEN 3 WHEN STATE = 1 THEN 2 END
+	WHERE ITEMID = #{itemId} AND (STATE = 0 OR STATE = 1)
+  </update>
+  
+  <insert id="SaveAuctionedItem">
+		insert into
+		AuctionedItem(itemId, auctionedPrice, userId, destination1, destination2, sellDate) 
+		values (#{itemId}, #{myPrice}, #{userId}, #{address1}, #{address2}, #{sellDate})
+  </insert>
+</mapper>

@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC "-//Apache Software Foundation//DTD Tiles Configuration 3.0//EN" "http://tiles.apache.org/dtds/tiles-config_3_0.dtd">
+<tiles-definitions>
+	<definition name="base_layout"
+		template="/WEB-INF/view/tiles/template/layout.jsp">
+		<put-attribute name="title" value="Artsell Demo"
+			type="string" />
+		<put-attribute name="header"
+			value="/WEB-INF/view/tiles/top.jsp" />
+		<put-attribute name="nav"
+			value="/WEB-INF/view/tiles/nav.jsp" />
+		<put-attribute name="footer"
+			value="/WEB-INF/view/tiles/footer.jsp" />
+	</definition>
+
+	<definition name="search_layout"
+		template="/WEB-INF/view/tiles/template/layout2.jsp">
+		<put-attribute name="title" value="Artsell Demo"
+			type="string" />
+		<put-attribute name="header"
+			value="/WEB-INF/view/tiles/top.jsp" />
+		<put-attribute name="nav2"
+			value="/WEB-INF/view/tiles/nav2.jsp" />
+		<put-attribute name="footer"
+			value="/WEB-INF/view/tiles/footer.jsp" />
+	</definition>
+
+	<definition name="main" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/main.jsp" />
+	</definition>
+
+	<definition name="myPage" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/myPage.jsp" />
+	</definition>
+
+	<definition name="login" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/login.jsp" />
+	</definition>
+
+	<definition name="editAccountForm" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/editAccountForm.jsp" />
+	</definition>
+
+	<definition name="Error" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/Error.jsp" />
+	</definition>
+
+	<definition name="myInterestingList" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/myInterestingList.jsp" />
+	</definition>
+
+	<definition name="myPaintingList" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/myPaintingList.jsp" />
+	</definition>
+
+
+	<definition name="searchResult" extends="search_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/searchResult.jsp" />
+	</definition>
+	
+	<definition name="paintingDetail" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/paintingDetail.jsp" />
+	</definition>
+	
+	<definition name="itemList" extends="search_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/itemList.jsp" />
+	</definition>
+	
+	<definition name="paintingRegister" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/paintingRegister.jsp" />
+	</definition>
+	
+	<definition name="auctioned_buyer" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/auctioned_buyer.jsp" />
+	</definition>
+
+	<definition name="auctioned_destination" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/auctioned_destination.jsp" />
+	</definition>
+
+	<definition name="auctioned_receipt" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/auctioned_receipt.jsp" />
+	</definition>
+
+	<definition name="auction_buyer" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/auction_buyer.jsp" />
+	</definition>
+	
+	<definition name="auction_seller" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/auction_seller.jsp" />
+	</definition>
+	
+	<definition name="auctioned_seller" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/auctioned_seller.jsp" />
+	</definition>
+	
+	<definition name="auctioned_sell_buyer" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/auctioned_sell_buyer.jsp" />
+	</definition>
+	
+	<definition name="myAuctionList" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/myAuctionList.jsp" />
+	</definition>
+	
+	<definition name="userList" extends="base_layout">
+		<put-attribute name="body"
+			value="/WEB-INF/view/tiles/userList.jsp" />
+	</definition>
+</tiles-definitions>
