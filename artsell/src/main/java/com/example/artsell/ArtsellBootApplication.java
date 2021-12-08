@@ -39,11 +39,5 @@ public class ArtsellBootApplication implements CommandLineRunner{
 		artSell.initScheduler();
 	}
 
-	/*
-	 * @Bean public Filter characterEncodingFilter() { CharacterEncodingFilter
-	 * characterEncodingFilter = new CharacterEncodingFilter();
-	 * characterEncodingFilter.setEncoding("UTF-8");
-	 * characterEncodingFilter.setForceEncoding(true); return
-	 * characterEncodingFilter; }
-	 */
+
 }
